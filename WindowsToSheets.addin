@@ -1,0 +1,11 @@
+﻿<RevitAddIns>
+    <AddIn Type="Application">
+        <Name>WindowsToSheets</Name>
+        <Assembly>WindowsToSheets/WindowsToSheets.dll</Assembly>
+        <AddInId>708E6F52-312F-4183-97CF-5DE960C06941</AddInId>
+        <FullClassName>WindowsToSheets.Application</FullClassName>
+        <VendorId>Development</VendorId>
+        <VendorDescription></VendorDescription>
+        <VendorEmail></VendorEmail>
+    </AddIn>
+</RevitAddIns>

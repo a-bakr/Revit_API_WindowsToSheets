@@ -2,7 +2,7 @@
 {
 	public static class Sheets
 	{
-		public static void PlaceViewsOnSheets(this Document doc, List<View> views)
+		public static void PlaceViewsOnSheets(this Document doc, IEnumerable<View> views)
 		{
 			using (var tx = new Transaction(doc, "Place Views on Sheets"))
 			{

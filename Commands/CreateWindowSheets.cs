@@ -1,47 +1,29 @@
 ﻿using Autodesk.Revit.Attributes;
-using Autodesk.Revit.UI;
+using Gene.Commands.Extensions;
 using WindowsToSheets.Commands.Extensions;
 
 namespace WindowsToSheets.Commands
 {
 	[Transaction(TransactionMode.Manual)]
-	public class CreateWindowSheets : IExternalCommand
+	public class CreateWindowSheets : RevitCommand
 	{
-		public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
+		public override void Action()
 		{
-			UIApplication uiapp = commandData.Application;
-			Document doc = uiapp.ActiveUIDocument.Document;
+			// Retrieve all built-in faced windows
+			var allWindows = Doc.GetAllBuiltInFacedWindows();
 
+			// Group windows by unique types
+			var groupedWindows = allWindows.GroupWindowsByType();
 
-			try
-			{
-				// Retrieve all built-in faced windows
-				List<FamilyInstance> allWindows = doc.GetAllBuiltInFacedWindows();
+			// Get one window from Each group
+			var windows = groupedWindows
+				.Select(x => x.Value.FirstOrDefault()).Where(x => x != null);
 
-				// Group windows by unique types
-				var groupedWindows = allWindows.GroupWindowsByType();
+			// Create views and annotate them
+			var views = windows.Select(window => Doc.CreateWindowView(window));
 
-				// Get one window from Each group
-				//var windows = groupedWindows.
-
-				// Create views and annotate them
-				List<View> views = new List<View>();
-				foreach (var windowGroup in groupedWindows)
-				{
-					View view = doc.CreateWindowView(windowGroup.Value.FirstOrDefault());
-					views.Add(view);
-				}
-
-				// Place the views on sheets
-				doc.PlaceViewsOnSheets(views);
-
-				return Result.Succeeded;
-			}
-			catch (Exception e)
-			{
-				message = e.Message;
-				return Result.Failed;
-			}
+			// Place the views on sheets
+			Doc.PlaceViewsOnSheets(views);
 		}
 	}
 }

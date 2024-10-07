@@ -80,7 +80,7 @@
 		/// curve type is not supported by this utility.</throws>
 		static void SwapAndReverse(this IList<Curve> list, int index1, int index2)
 		{
-			Curve temp = list[index1];
+			var temp = list[index1];
 			list[index1] = CreateReversedCurve(list[index2]);
 			list[index2] = temp;
 		}
@@ -92,27 +92,27 @@
 		static void SortCurvesWithOffsetsContiguous(this IList<Curve> curves, IList<double> offsets)
 		{
 			// The number of curves.
-			int n = curves.Count;
+			var n = curves.Count;
 
 			// Walk through curves to match up the curves
 			// in correct ordering and directions.
 
-			for (int i = 0; i < n - 1; ++i)
+			for (var i = 0; i < n - 1; ++i)
 			{
 				// Get the current curve.
-				Curve curve = curves[i];
+				var curve = curves[i];
 
 				// Get the end point of the current curve.
-				XYZ endPoint = curve.GetEndPoint(1);
+				var endPoint = curve.GetEndPoint(1);
 
 				// The point to used to find the curve.
 				XYZ p;
 
 				// Initialize the "found" flag.
-				bool found = false;
+				var found = false;
 
 				// Initialize the counter.
-				int j = i + 1;
+				var j = i + 1;
 
 				// Find curve with start point = end point of the current curve.
 
@@ -194,10 +194,10 @@
 		public static (List<Curve> curves, List<double> offsets) GetContiguousCurvesWithOffsets(this IList<Curve> originalCurves, IList<double> originalOffsets)
 		{
 			// Build a list of curves from the original curves list.
-			List<Curve> newCurves = new List<Curve>(originalCurves);
+			var newCurves = new List<Curve>(originalCurves);
 
 			// Build a list of offsets from the original offsets list.
-			List<double> newOffsets = new List<double>(originalOffsets);
+			var newOffsets = new List<double>(originalOffsets);
 
 			// Sort and make contiguous for the new curves list.
 			SortCurvesWithOffsetsContiguous(newCurves, newOffsets);

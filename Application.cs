@@ -13,11 +13,10 @@ namespace WindowsToSheets
 			CreateRibbon();
 		}
 
-
 		private void CreateRibbon()
 		{
 
-			var panel = Application.CreatePanel("Commands", "WindowsToSheets");
+			var panel = Application.CreatePanel("WindowsToSheets");
 			var path = GetAssemblyPath() + "/Resources/Icons";
 
 			panel.AddPushButton<CreateWindowSheets>("CreateWindowSheets")

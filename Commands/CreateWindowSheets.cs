@@ -16,10 +16,13 @@ namespace WindowsToSheets.Commands
 			try
 			{
 				// Retrieve all built-in faced windows
-				List<FamilyInstance> windows = doc.GetAllBuiltInFacedWindows();
+				List<FamilyInstance> allWindows = doc.GetAllBuiltInFacedWindows();
 
 				// Group windows by unique types
-				var groupedWindows = windows.GroupWindowsByType();
+				var groupedWindows = allWindows.GroupWindowsByType();
+
+				// Get one window from Each group
+				//var windows = groupedWindows.
 
 				// Create views and annotate them
 				List<View> views = new List<View>();

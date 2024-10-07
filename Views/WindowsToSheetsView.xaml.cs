@@ -9,5 +9,15 @@ namespace WindowsToSheets.Views
 			DataContext = viewModel;
 			InitializeComponent();
 		}
+
+		private void SetViewName(object sender, System.Windows.RoutedEventArgs e)
+		{
+
+		}
+
+		private void PrintView(object sender, System.Windows.RoutedEventArgs e)
+		{
+
+		}
 	}
 }

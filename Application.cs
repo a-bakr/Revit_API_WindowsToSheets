@@ -10,6 +10,7 @@ namespace WindowsToSheets
 	{
 		public override void OnStartup()
 		{
+
 			CreateRibbon();
 		}
 

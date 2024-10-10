@@ -39,19 +39,23 @@
         <StartAction>Program</StartAction>
         <StartProgram>C:\Program Files\Autodesk\Revit $(RevitVersion)\Revit.exe</StartProgram>
         <StartArguments>/language ENG</StartArguments>
+        <ProduceReferenceAssembly>True</ProduceReferenceAssembly>
     </PropertyGroup>
 
     <ItemGroup>
+      <Page Remove="Views\Test.xaml" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="MaterialDesignColors" Version="3.1.0" />
+        <PackageReference Include="MaterialDesignThemes" Version="5.1.0" />
+        <PackageReference Include="MaterialDesignThemes.Wpf" Version="1.0.1" />
         <PackageReference Include="Nice3point.Revit.Build.Tasks" Version="2.*" />
         <PackageReference Include="Nice3point.Revit.Toolkit" Version="$(RevitVersion).*" />
         <PackageReference Include="Nice3point.Revit.Extensions" Version="$(RevitVersion).*" />
         <PackageReference Include="Nice3point.Revit.Api.RevitAPI" Version="$(RevitVersion).*" />
         <PackageReference Include="Nice3point.Revit.Api.RevitAPIUI" Version="$(RevitVersion).*" />
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.*" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <Folder Include="Models" />
     </ItemGroup>
 
     <ItemGroup>

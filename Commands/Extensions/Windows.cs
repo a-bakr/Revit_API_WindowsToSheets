@@ -6,7 +6,7 @@
 		public static List<FamilyInstance> GetAllBuiltInFacedWindows(this Document doc)
 		{
 			// Filter to only get built-in faced windows
-			var collector = new FilteredElementCollector(doc);
+			FilteredElementCollector collector = new FilteredElementCollector(doc);
 			var windows = collector.OfClass(typeof(FamilyInstance))
 				.OfCategory(BuiltInCategory.OST_Windows)
 				.WhereElementIsNotElementType()

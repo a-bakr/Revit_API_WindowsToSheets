@@ -40,13 +40,13 @@ namespace WindowsToSheets.Commands.Extensions
 		public Dimension AddDimension(View view, ReferencePlane refPlane1, ReferencePlane refPlane2, ReferencePlane refPlane)
 		{
 			Dimension dim;
-			var startPoint = new Autodesk.Revit.DB.XYZ();
-			var endPoint = new Autodesk.Revit.DB.XYZ();
+			Autodesk.Revit.DB.XYZ startPoint = new Autodesk.Revit.DB.XYZ();
+			Autodesk.Revit.DB.XYZ endPoint = new Autodesk.Revit.DB.XYZ();
 			Line line;
 			Reference ref1;
 			Reference ref2;
 			Reference ref3;
-			var refArray = new ReferenceArray();
+			ReferenceArray refArray = new ReferenceArray();
 			ref1 = refPlane1.GetReference();
 			ref2 = refPlane2.GetReference();
 			ref3 = refPlane.GetReference();
@@ -59,7 +59,7 @@ namespace WindowsToSheets.Commands.Extensions
 				refArray.Append(ref3);
 				refArray.Append(ref2);
 			}
-			var subTransaction = new SubTransaction(m_document);
+			SubTransaction subTransaction = new SubTransaction(m_document);
 			subTransaction.Start();
 			dim = m_document.FamilyCreate.NewDimension(view, line, refArray);
 			subTransaction.Commit();
@@ -76,14 +76,14 @@ namespace WindowsToSheets.Commands.Extensions
 		public Dimension AddDimension(View view, ReferencePlane refPlane, Face face)
 		{
 			Dimension dim;
-			var startPoint = new Autodesk.Revit.DB.XYZ();
-			var endPoint = new Autodesk.Revit.DB.XYZ();
+			Autodesk.Revit.DB.XYZ startPoint = new Autodesk.Revit.DB.XYZ();
+			Autodesk.Revit.DB.XYZ endPoint = new Autodesk.Revit.DB.XYZ();
 			Line line;
 			Reference ref1;
 			Reference ref2;
-			var refArray = new ReferenceArray();
+			ReferenceArray refArray = new ReferenceArray();
 			ref1 = refPlane.GetReference();
-			var pFace = face as PlanarFace;
+			PlanarFace pFace = face as PlanarFace;
 			ref2 = pFace.Reference;
 			if (null != ref1 && null != ref2)
 			{
@@ -92,7 +92,7 @@ namespace WindowsToSheets.Commands.Extensions
 			}
 			startPoint = refPlane.FreeEnd;
 			endPoint = new Autodesk.Revit.DB.XYZ(startPoint.X, pFace.Origin.Y, startPoint.Z);
-			var subTransaction = new SubTransaction(m_document);
+			SubTransaction subTransaction = new SubTransaction(m_document);
 			subTransaction.Start();
 			line = Line.CreateBound(startPoint, endPoint);
 			dim = m_document.FamilyCreate.NewDimension(view, line, refArray);
@@ -110,15 +110,15 @@ namespace WindowsToSheets.Commands.Extensions
 		public Dimension AddDimension(View view, Face face1, Face face2)
 		{
 			Dimension dim;
-			var startPoint = new Autodesk.Revit.DB.XYZ();
-			var endPoint = new Autodesk.Revit.DB.XYZ();
+			Autodesk.Revit.DB.XYZ startPoint = new Autodesk.Revit.DB.XYZ();
+			Autodesk.Revit.DB.XYZ endPoint = new Autodesk.Revit.DB.XYZ();
 			Line line;
 			Reference ref1;
 			Reference ref2;
-			var refArray = new ReferenceArray();
-			var pFace1 = face1 as PlanarFace;
+			ReferenceArray refArray = new ReferenceArray();
+			PlanarFace pFace1 = face1 as PlanarFace;
 			ref1 = pFace1.Reference;
-			var pFace2 = face2 as PlanarFace;
+			PlanarFace pFace2 = face2 as PlanarFace;
 			ref2 = pFace2.Reference;
 			if (null != ref1 && null != ref2)
 			{
@@ -127,7 +127,7 @@ namespace WindowsToSheets.Commands.Extensions
 			}
 			startPoint = pFace1.Origin;
 			endPoint = new Autodesk.Revit.DB.XYZ(startPoint.X, pFace2.Origin.Y, startPoint.Z);
-			var subTransaction = new SubTransaction(m_document);
+			SubTransaction subTransaction = new SubTransaction(m_document);
 			subTransaction.Start();
 			line = Line.CreateBound(startPoint, endPoint);
 			dim = m_document.FamilyCreate.NewDimension(view, line, refArray);

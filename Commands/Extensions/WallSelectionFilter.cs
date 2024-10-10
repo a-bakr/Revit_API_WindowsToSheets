@@ -7,7 +7,7 @@ namespace WindowsToSheets.Commands.Extensions
 		public bool AllowElement(Element elem)
 		{
 			var elemCategoryId = elem?.Category?.Id?.Value ?? -1;
-			var builtInCategory = (BuiltInCategory)elemCategoryId;
+			BuiltInCategory builtInCategory = (BuiltInCategory)elemCategoryId;
 			return builtInCategory == BuiltInCategory.OST_Walls;
 		}
 

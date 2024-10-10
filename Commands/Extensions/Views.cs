@@ -2,49 +2,62 @@
 {
 	public static class Views
 	{
-		public static View CreateWindowView(this Document doc, FamilyInstance window)
+		public static View CreateWindowView(this FamilyInstance window, Document doc, int viewScale)
 		{
-			using (var tx = new Transaction(doc, "Create Annotated Window View"))
-			{
-				tx.Start();
+			// Get the window's location
+			var location = (window.Location as LocationPoint)?.Point;
 
-				// Get the window's location
-				var location = (window.Location as LocationPoint).Point;
+			// Find the ViewFamilyType for Elevations
+			var elevationViewType = new FilteredElementCollector(doc)
+				.OfClass(typeof(ViewFamilyType))
+				.Cast<ViewFamilyType>()
+				.FirstOrDefault(vft => vft.ViewFamily == ViewFamily.Elevation);
 
-				// Retrieve the ViewFamilyType for Elevation views
-				var viewFamilyType = new FilteredElementCollector(doc)
-						.OfClass(typeof(ViewFamilyType))
-						.Cast<ViewFamilyType>()
-						.FirstOrDefault(vft => vft.ViewFamily == ViewFamily.Elevation);
+			// Create the elevation marker at the window's position
+			var elevationMarker = ElevationMarker
+				.CreateElevationMarker(doc, elevationViewType?.Id, location, viewScale);
 
-				// Ensure the ViewFamilyType was found
-				if (viewFamilyType == null)
-				{
-					tx.RollBack();
-					throw new System.Exception("Elevation view family type not found.");
-				}
+			// Create an elevation view using the marker, index 0 corresponds to teh first view created
+			var elevationView = elevationMarker.CreateElevation(doc, doc.ActiveView.Id, 0);
+			window.CorrectViewDirection(doc, elevationMarker);
 
-				// Create an elevation marker at the window's location
-				var marker = ElevationMarker.CreateElevationMarker(doc, viewFamilyType.Id, location, 20);
+			// Set the view properties to make it an elevation
+			elevationView.CropBoxActive = true;
+			elevationView.CropBoxVisible = false;
 
-				// Create the elevation view using the marker
-				var elevationView = marker.CreateElevation(doc, doc.ActiveView.Id, 0);
+			// Set the crop region based on the bounding box of the window
+			var windowBoundingBox = window.get_BoundingBox(elevationView);
+			var min = windowBoundingBox.Min;
+			var max = windowBoundingBox.Max;
 
-				// Adjust the view's crop region based on the window's bounding box
-				var bbox = window.get_BoundingBox(elevationView);
+			// Add a buffer around the window to ensure the entire element is visible
+			var cropBox = elevationView.CropBox;
+			var padding = 0.3;
+			cropBox.Min = new XYZ(min.X - padding, min.Z - padding, min.Z - padding);
+			cropBox.Max = new XYZ(max.X + padding, max.Z + padding, max.Z + padding);
+			elevationView.CropBox = cropBox;
 
-				// Add padding around the window
-				var padding = 0.2; // Adjust the padding as needed
-				bbox.Max = new XYZ(bbox.Max.X + padding, bbox.Max.Z + padding, bbox.Max.Y + padding);
-				bbox.Min = new XYZ(bbox.Min.X - padding, bbox.Min.Z - padding, bbox.Min.Y - padding);
+			elevationView.Name = window.Name;
+			// Optionally set the detail level and scale of the view
+			elevationView.get_Parameter(BuiltInParameter.VIEW_DETAIL_LEVEL).Set((int)ViewDetailLevel.Fine);
+			return elevationView;
+		}
 
-				elevationView.CropBox = bbox;
-				elevationView.CropBoxActive = true;
+		private static void CorrectViewDirection(this FamilyInstance window, Document doc, ElevationMarker elevationMarker)
+		{
+			var location = (window.Location as LocationPoint)?.Point;
+			var facingDirection = window.FacingOrientation;
 
-				tx.Commit();
+			// Get the active view's right direction to align the elevation view
+			var rightDirection = doc.ActiveView.RightDirection;
 
-				return elevationView;
-			}
+			// Calculate the angle between the view's right direction and the window's facing direction
+			var angle = rightDirection.AngleTo(facingDirection);
+			angle -= Math.PI / 2;
+
+			// Rotate the elevation marker to align with the window's facing direction
+			Line axis = Line.CreateBound(location, location?.Add(XYZ.BasisZ)); // Rotation axis (vertical axis through the window)
+			ElementTransformUtils.RotateElement(doc, elevationMarker.Id, axis, angle);
 		}
 	}
 }

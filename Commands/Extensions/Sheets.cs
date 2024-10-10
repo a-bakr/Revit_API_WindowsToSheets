@@ -2,36 +2,31 @@
 {
 	public static class Sheets
 	{
-		public static void PlaceViewsOnSheets(this Document doc, IEnumerable<View> views)
+		public static void PlaceViewsOnSheets(this Document doc, List<View> views)
 		{
-			using (var tx = new Transaction(doc, "Place Views on Sheets"))
+			var sheetName = "A0 Metric";
+			var titleBlock = doc.GetTitleBlockSymbol(sheetName);
+			var sheet = ViewSheet.Create(doc, titleBlock.Id);
+			sheet.Name = "Window Elevations";
+
+			var sheetDim = titleBlock.BoundingBox(sheet);
+			//var firstViewDim = views.FirstOrDefault().BoundingBox(sheet);
+			var origin = sheetDim.Min;
+			origin += new XYZ(0.3, 0.3, 0);
+
+			foreach (var view in views)
 			{
-				tx.Start();
+				var viewport = Viewport.Create(doc, sheet.Id, view.Id, origin);
+				var viewDim = viewport.BoundingBox(sheet);
 
-				var sheetName = "A0 Metric";
-				var titleBlock = doc.GetTitleBlockSymbol(sheetName);
-				var sheet = ViewSheet.Create(doc, titleBlock.Id);
-				sheet.Name = "Window Elevations";
-
-				var origin = sheet.Origin + new XYZ(0, 0, 0);
-				var sheetHeight = sheet.GetParameter(BuiltInParameter.SHEET_HEIGHT).AsDouble();
-				var sheetWidth = sheet.GetParameter(BuiltInParameter.SHEET_WIDTH).AsDouble();
-
-				foreach (var view in views)
-				{
-					var viewport = Viewport.Create(doc, sheet.Id, view.Id, origin);
-
-					// Update origin for next view placement
-					var viewBounding = viewport.get_BoundingBox(sheet);
-					var viewHeight = viewBounding.Max.Y;
-					var viewWidth = viewBounding.Max.X;
-
-					//double viewHeight = view.get_BoundingBox(sheet).Max.Y;
-					origin = new XYZ(origin.X, origin.Y + sheetHeight, origin.Z);
-				}
-
-				tx.Commit();
+				var y = origin.Y + viewDim.Height + 1.0 / 12;
+				origin = new XYZ(origin.X, y, origin.Z);
 			}
+		}
+
+		public static Viewport PlaceOnSheet(this View view, Document doc, ViewSheet sheet, XYZ point)
+		{
+			return Viewport.Create(doc, sheet.Id, view.Id, point);
 		}
 	}
 }

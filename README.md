@@ -84,6 +84,7 @@ public class CreateWindowSheets : IExternalCommand
 Here�s an example of What I am trying to do. the generated window sheet with views and annotations:
 
 ![Window Sheets Example](./Resources/window_sheet_example.png)
+![Window Sheets Example](./Resources/WindowsToSheetUI.png)
 
 ## Contributing
 

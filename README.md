@@ -25,42 +25,6 @@ The plugin's main functionality is implemented in the `CreateWindowSheets` class
 - **Create Views**: Generates views for each window type with `CreateWindowView()`.
 - **Place on Sheets**: Places the views onto sheets with `PlaceViewsOnSheets()`.
 
-### Code Snippet
-
-```csharp
-[Transaction(TransactionMode.Manual)]
-public class CreateWindowSheets : IExternalCommand
-{
-    public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
-    {
-        UIApplication uiapp = commandData.Application;
-        Document doc = uiapp.ActiveUIDocument.Document;
-
-        try
-        {
-            List<FamilyInstance> windows = doc.GetAllBuiltInFacedWindows();
-            var groupedWindows = windows.GroupWindowsByType();
-            List<View> views = new List<View>();
-
-            foreach (var windowGroup in groupedWindows)
-            {
-                View view = doc.CreateWindowView(windowGroup.Value.FirstOrDefault());
-                views.Add(view);
-            }
-
-            doc.PlaceViewsOnSheets(views);
-
-            return Result.Succeeded;
-        }
-        catch (Exception e)
-        {
-            message = e.Message;
-            return Result.Failed;
-        }
-    }
-}
-```
-
 ## Installation
 
 1. Clone the repository:

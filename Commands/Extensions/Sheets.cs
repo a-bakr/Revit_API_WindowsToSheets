@@ -2,31 +2,27 @@
 {
 	public static class Sheets
 	{
-		public static void PlaceViewsOnSheets(this Document doc, List<View> views)
+		public static Viewport PlaceView(this ViewSheet sheet, Document doc, View view, XYZ point)
 		{
-			var sheetName = "A0 Metric";
-			var titleBlock = doc.GetTitleBlockSymbol(sheetName);
-			var sheet = ViewSheet.Create(doc, titleBlock.Id);
-			sheet.Name = "Window Elevations";
+			return Viewport.Create(doc, sheet.Id, view.Id, point);
+		}
 
+
+		public static void PlaceViews(this ViewSheet sheet, Document doc, IEnumerable<View> views)
+		{
+			var titleBlock = doc.GetTitleBlocks(sheet);
 			var sheetDim = titleBlock.BoundingBox(sheet);
-			//var firstViewDim = views.FirstOrDefault().BoundingBox(sheet);
 			var origin = sheetDim.Min;
 			origin += new XYZ(0.3, 0.3, 0);
 
 			foreach (var view in views)
 			{
-				var viewport = Viewport.Create(doc, sheet.Id, view.Id, origin);
-				var viewDim = viewport.BoundingBox(sheet);
-
+				if (view == null) continue;
+				var viewPort = sheet.PlaceView(doc, view, origin);
+				var viewDim = viewPort.BoundingBox(sheet);
 				var y = origin.Y + viewDim.Height + 1.0 / 12;
 				origin = new XYZ(origin.X, y, origin.Z);
 			}
-		}
-
-		public static Viewport PlaceOnSheet(this View view, Document doc, ViewSheet sheet, XYZ point)
-		{
-			return Viewport.Create(doc, sheet.Id, view.Id, point);
 		}
 	}
 }

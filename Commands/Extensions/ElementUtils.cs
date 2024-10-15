@@ -9,9 +9,11 @@
 			var viewWidth = viewBounding.Max.X - viewBounding.Min.X;
 			return (viewWidth, viewHeight, viewBounding.Min, viewBounding.Max);
 		}
+
 		public static ElementFilter FiltersElementByCategory(
 				this Document doc, IEnumerable<string> categoryNames)
 		{
+
 			ElementFilter categoriesFilter = null;
 			if (categoryNames == null || !categoryNames.Any())
 			{

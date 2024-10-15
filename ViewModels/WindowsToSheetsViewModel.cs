@@ -1,13 +1,11 @@
 ﻿using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Windows.Input;
 using WindowsToSheets.Commands.Extensions;
 using WindowsToSheets.Models;
-using RelayCommand = WindowsToSheets.Commands.RelayCommand;
 
 namespace WindowsToSheets.ViewModels
 {
-	public class WindowsToSheetsViewModel : INotifyPropertyChanged
+	public class WindowsToSheetsViewModel : ObservableObject
 	{
 		private readonly Document _doc;
 
@@ -32,8 +30,6 @@ namespace WindowsToSheets.ViewModels
 			LoadViewTemplates();
 		}
 
-		public event PropertyChangedEventHandler PropertyChanged;
-
 		// Windows Section
 		public ObservableCollection<WindowModel> AllWindows { get; set; }
 		public ObservableCollection<WindowModel> SelectedWindows { get; set; }
@@ -47,7 +43,7 @@ namespace WindowsToSheets.ViewModels
 			set
 			{
 				_viewName = value;
-				OnPropertyChanged(nameof(ViewName));
+				OnPropertyChanged();
 			}
 		}
 
@@ -58,7 +54,7 @@ namespace WindowsToSheets.ViewModels
 			set
 			{
 				_viewTemplate = value;
-				OnPropertyChanged(nameof(ViewTemplate));
+				OnPropertyChanged();
 			}
 		}
 
@@ -69,7 +65,7 @@ namespace WindowsToSheets.ViewModels
 			set
 			{
 				_viewScale = value;
-				OnPropertyChanged(nameof(ViewScale));
+				OnPropertyChanged();
 			}
 		}
 
@@ -84,7 +80,7 @@ namespace WindowsToSheets.ViewModels
 			set
 			{
 				_sheetName = value;
-				OnPropertyChanged(nameof(SheetName));
+				OnPropertyChanged();
 			}
 		}
 
@@ -95,7 +91,7 @@ namespace WindowsToSheets.ViewModels
 			set
 			{
 				_selectedTitleBlock = value;
-				OnPropertyChanged(nameof(SelectedTitleBlock));
+				OnPropertyChanged();
 			}
 		}
 
@@ -104,52 +100,41 @@ namespace WindowsToSheets.ViewModels
 
 		private void LoadAllWindows()
 		{
-			var allWindows = _doc.GetAllBuiltInFacedWindows();
-			var groupedWindows = allWindows.GroupWindowsByType();
-			var windows = groupedWindows.Select(x => x.Value.FirstOrDefault()).Where(x => x != null).ToList();
+			var allWindows = _doc.GetWindows().GroupBy(x => x.GetTypeId());
+			var windows = allWindows
+				.Select(x => x.FirstOrDefault())
+				.Where(x => x != null).ToList();
 
 			foreach (var window in windows)
-			{
 				AllWindows.Add(new WindowModel(window));
-			}
 		}
 
 		private void LoadTitleBlocks()
 		{
-			var collector = new FilteredElementCollector(_doc);
-			var titleBlocks = collector.OfCategory(BuiltInCategory.OST_TitleBlocks)
-																 .OfClass(typeof(FamilySymbol))
-																 .Cast<FamilySymbol>()
-																 .ToList();
+			var titleBlocks = _doc.GetTitleBlocks();
 
 			foreach (var tb in titleBlocks)
-			{
 				TitleBlocks.Add(tb);
-			}
 
 			_selectedTitleBlock = TitleBlocks.FirstOrDefault();
 		}
 
 		private void LoadViewTemplates()
 		{
-			var templates = _doc.GetAllViewTemplates();
+			var templates = _doc.GetViewTemplates();
 			foreach (var template in templates)
-			{
 				ViewTemplates.Add(template);
-			}
 			_viewTemplate = ViewTemplates.FirstOrDefault();
 		}
 
-		private void SelectWindows(object parameter)
+		private void SelectWindows()
 		{
 			SelectedWindows.Clear();
 			foreach (var window in AllWindows)
-			{
 				SelectedWindows.Add(window);
-			}
 		}
 
-		private void CreateViews(object parameter)
+		private void CreateViews()
 		{
 			if (SelectedWindows.Count == 0)
 				return;
@@ -181,47 +166,21 @@ namespace WindowsToSheets.ViewModels
 			}
 		}
 
-		private void CreateSheets(object parameter)
+		private void CreateSheets()
 		{
-			if (SelectedWindows.Count == 0 || SelectedTitleBlock == null)
-				return;
-
+			if (SelectedWindows.Count == 0 || SelectedTitleBlock == null) return;
 			using (Transaction tran = new Transaction(_doc, "Creating Sheets"))
 			{
 				tran.Start();
-
 				var sheet = ViewSheet.Create(_doc, SelectedTitleBlock.Id);
 
 				if (!string.IsNullOrEmpty(SheetName))
-				{
 					sheet.Name = SheetName;
-				}
 
-				var sheetDim = SelectedTitleBlock.BoundingBox(sheet);
-				var origin = sheetDim.Min;
-				origin += new XYZ(0.3, 0.3, 0);
-
-				foreach (var windowModel in SelectedWindows)
-				{
-					var view = windowModel.AssociatedView;
-
-					if (view != null)
-					{
-						var viewPort = view.PlaceOnSheet(_doc, sheet, origin);
-
-						var viewDim = viewPort.BoundingBox(sheet);
-						var y = origin.Y + viewDim.Height + 1.0 / 12;
-						origin = new XYZ(origin.X, y, origin.Z);
-					}
-				}
-
+				var views = SelectedWindows.Select(x => x.AssociatedView);
+				sheet.PlaceViews(_doc, views);
 				tran.Commit();
 			}
-		}
-
-		protected void OnPropertyChanged(string propertyName)
-		{
-			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 		}
 	}
 }

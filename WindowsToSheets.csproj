@@ -43,6 +43,10 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <Compile Remove="Commands\RelayCommand.cs" />
+    </ItemGroup>
+
+    <ItemGroup>
       <Page Remove="Views\Test.xaml" />
     </ItemGroup>
 

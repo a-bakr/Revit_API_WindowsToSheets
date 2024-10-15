@@ -31,14 +31,14 @@
                     <Label Content="View Template:" Width="100"/>
 					<ComboBox ItemsSource="{Binding ViewTemplates}" 
                               SelectedItem="{Binding ViewTemplate}" 
-					          SelectedIndex="0"
 					          DisplayMemberPath="Name" Width="200"/>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Margin="5">
                     <Label Content="View Scale:" Width="100"/>
                     <TextBox Text="{Binding ViewScale}" Width="200"/>
                 </StackPanel>
-                <Button Content="Create Views" Command="{Binding CreateViewsCommand}"
+                <Button Content="Create Views" 
+                        Command="{Binding CreateViewsCommand}"
                         Margin="5"/>
             </StackPanel>
         </GroupBox>
@@ -54,11 +54,11 @@
                     <Label Content="Title Block:" Width="100"/>
                     <ComboBox ItemsSource="{Binding TitleBlocks}"
                               SelectedItem="{Binding SelectedTitleBlock}"
-                              SelectedIndex="0"
                               DisplayMemberPath="Name" Width="200"/>
                 </StackPanel>
                 <Button Content="Create Sheets"
-                        Command="{Binding CreateSheetsCommand}" Margin="5"/>
+                        Command="{Binding CreateSheetsCommand}" 
+                        Margin="5"/>
             </StackPanel>
         </GroupBox>
     </Grid>

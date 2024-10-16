@@ -1,6 +1,7 @@
 # Author: Abdallah Bakr
-LinkedIn: https://www.linkedin.com/in/abdallah-bakr
-Github: https://github.com/a-bakr
+
+[LinkedIn] (https://www.linkedin.com/in/abdallah-bakr)
+[Github] (https://github.com/a-bakr)
 
 # Revit Plugin: Create Window Sheets
 
@@ -21,6 +22,7 @@ This Revit plugin simplifies the process of generating sheets for windows from e
 4. **Sheet Placement**: The created views are placed onto sheets with automatic annotations and dimensions.
 
 ## Code Overview
+
 The plugin's main functionality is implemented in the `CreateWindowSheets` class, which performs the following steps:
 
 - **Retrieve Windows**: Uses `GetAllBuiltInFacedWindows()` to collect all windows in the model.

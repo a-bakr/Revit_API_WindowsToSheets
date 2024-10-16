@@ -1,7 +1,7 @@
 # Author: Abdallah Bakr
 
-[LinkedIn] (https://www.linkedin.com/in/abdallah-bakr)
-[Github] (https://github.com/a-bakr)
+LinkedIn: https://www.linkedin.com/in/abdallah-bakr <br>
+Github: https://github.com/a-bakr <br>
 
 # Revit Plugin: Create Window Sheets
 

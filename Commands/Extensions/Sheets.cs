@@ -7,10 +7,9 @@
 			return Viewport.Create(doc, sheet.Id, view.Id, point);
 		}
 
-
 		public static void PlaceViews(this ViewSheet sheet, Document doc, IEnumerable<View> views)
 		{
-			var titleBlock = doc.GetTitleBlocks(sheet);
+			var titleBlock = doc.GetTitleBlock(sheet);
 			var sheetDim = titleBlock.BoundingBox(sheet);
 			var origin = sheetDim.Min;
 			origin += new XYZ(0.3, 0.3, 0);

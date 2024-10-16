@@ -148,7 +148,7 @@ namespace WindowsToSheets.ViewModels
 					var window = windowModel.WindowInstance;
 
 					// Create a view for the window
-					var view = window.CreateWindowView(_doc, ViewScale);
+					var view = window.CreateView(_doc, ViewScale);
 
 					// Set view properties
 					if (!string.IsNullOrEmpty(ViewName))

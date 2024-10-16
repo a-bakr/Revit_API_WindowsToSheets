@@ -2,7 +2,7 @@
 {
 	public static class Views
 	{
-		public static View CreateWindowView(this FamilyInstance window, Document doc, int viewScale)
+		public static View CreateView(this FamilyInstance window, Document doc, int viewScale)
 		{
 			// Get the window's location
 			var location = (window.Location as LocationPoint)?.Point;
@@ -19,7 +19,7 @@
 
 			// Create an elevation view using the marker, index 0 corresponds to teh first view created
 			var elevationView = elevationMarker.CreateElevation(doc, doc.ActiveView.Id, 0);
-			window.CorrectViewDirection(doc, elevationMarker);
+			elevationMarker.CorrectViewDirection(doc, window);
 
 			// Set the view properties to make it an elevation
 			elevationView.CropBoxActive = true;
@@ -43,7 +43,7 @@
 			return elevationView;
 		}
 
-		private static void CorrectViewDirection(this FamilyInstance window, Document doc, ElevationMarker elevationMarker)
+		private static void CorrectViewDirection(this ElevationMarker elevationMarker, Document doc, FamilyInstance window)
 		{
 			var location = (window.Location as LocationPoint)?.Point;
 			var facingDirection = window.FacingOrientation;

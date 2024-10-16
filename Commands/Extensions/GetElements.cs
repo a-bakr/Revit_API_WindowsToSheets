@@ -2,7 +2,8 @@
 
 public static class GetElements
 {
-	public static FilteredElementCollector Collector;
+	public static FilteredElementCollector Collector(Document doc) => new FilteredElementCollector(doc);
+
 	public static List<FamilySymbol> GetTitleBlocks(this Document doc)
 	{
 		return new FilteredElementCollector(doc)
@@ -11,12 +12,13 @@ public static class GetElements
 			.Cast<FamilySymbol>()
 			.ToList();
 	}
-	public static FamilySymbol GetTitleBlocks(this Document doc, ViewSheet sheet)
+
+	public static FamilyInstance GetTitleBlock(this Document doc, ViewSheet sheet)
 	{
 		return new FilteredElementCollector(doc, sheet.Id)
 			.OfCategory(BuiltInCategory.OST_TitleBlocks)
 			.WhereElementIsNotElementType()
-			.Cast<FamilySymbol>()
+			.Cast<FamilyInstance>()
 			.FirstOrDefault();
 	}
 

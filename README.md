@@ -1,4 +1,7 @@
 # Author: Abdallah Bakr
+LinkedIn: https://www.linkedin.com/in/abdallah-bakr
+Github: https://github.com/a-bakr
+
 # Revit Plugin: Create Window Sheets
 
 This Revit plugin simplifies the process of generating sheets for windows from elevation views. It automates window detection, creates views for each window, and places those views on sheets with dimensions and annotations for documentation.
